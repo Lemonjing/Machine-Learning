@@ -4,9 +4,10 @@
 import numpy as np
 import operator
 import matplotlib.pyplot as plt
+from os import listdir
 
 """
-电影分类的例子
+电影分类的例子（收集数据）
 """
 def createDataSet():
     group = np.array([[1.0, 1.1], [1.0, 1.0], [0, 0], [0, 0.1]])
@@ -70,7 +71,7 @@ def classify0(inX, dataset, lables, k):
 
 
 """
-数据语预处理
+数据预处理（准备数据）
 1.文件转矩阵
 """
 def file2Matrix(fileName):
@@ -90,7 +91,7 @@ def file2Matrix(fileName):
 
 
 """
-数据语预处理
+数据语预处理（准备数据）
 2.数据集归一化特征值
 """
 def autoNorm(dataset):
@@ -106,27 +107,26 @@ def autoNorm(dataset):
 
 
 """
-分类器错误率测试
+改进约会网站配对分类器错误率测试（测试）
 """
 def datingClassTest():
-    predictRatio = 0.10  # 预测样本所占比例
+    testRatio = 0.10  # 预测样本所占比例
     datingDataMatrix, datingDataLabels = file2Matrix("../../resources/kNN/dating.txt")
     normMatrix, gap, minValue = autoNorm(datingDataMatrix)
-    m = normMatrix.shape[0]
-    numPredict = int(m * predictRatio)  # 用于训练的90%，用于预测的10%
+    m = normMatrix.shape[0] # 样本总大小
+    mTest = int(m * testRatio)  # 用于预测的占10%
     errorCount = 0.0
-    for i in range(numPredict):
-        classifierResult = classify0(normMatrix[i, :], normMatrix[numPredict:m, :]
-                                     , datingDataLabels[numPredict:m], 3)
+    for i in range(mTest):
+        classifierResult = classify0(normMatrix[i, :], normMatrix[mTest:m, :]
+                                     , datingDataLabels[mTest:m], 3)
         print 'the classifier came back with: %d, the real answer is : %d' % (classifierResult, datingDataLabels[i])
         if (classifierResult != datingDataLabels[i]):
             errorCount += 1.0
-    print "the total error rate is: %f" % (errorCount / float(numPredict))
+    print "the total error rate is: %f" % (errorCount / float(mTest))
 
 
 """
-分类器使用
-约会网站预测
+改进约会网站配对分类器使用（预测）
 """
 def classiferPerson():
     resultList = [u"一点也没", u"有些魅力", u"极具魅力"]
@@ -140,7 +140,52 @@ def classiferPerson():
     classifierResult = classify0((inArr - minValue) / gap, normMatrix, datingDataLabels, 3)
     print "you probably like this person:", resultList[classifierResult - 1]
 
+
+"""
+手写数字识别文本图像转矩阵（准备数据）
+"""
+def img2Vector(fileName):
+    vector = np.zeros((1, 1024))
+    fr = open(fileName)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            vector[0, 32*i + j] = lineStr[j]
+    return vector
+
+
+"""
+手写数字识别错误率测试（测试）
+"""
+def handWritingClassTest():
+    labels = []
+    trainingFiles = listdir("../../resources/kNN/trainingDigits")
+    m = len(trainingFiles)
+    trainingMatrix = np.zeros((m, 1024))
+    for i in range(m):
+        fileName = trainingFiles[i]
+        targetDigit = int(fileName.split("_")[0])
+        labels.append(targetDigit)
+        trainingMatrix[i, :] = img2Vector("../../resources/kNN/trainingDigits/%s" % fileName)
+
+    testFiles = listdir("../../resources/kNN/testDigits")
+    mTest = len(testFiles)
+    errorCount = 0.0
+    for i in range(mTest):
+        fileName = testFiles[i]
+        realDigit = int(fileName.split("_")[0])
+        testVector = img2Vector("../../resources/kNN/testDigits/%s" % fileName)
+        classifierResult = classify0(testVector, trainingMatrix, labels, 3)
+        print 'the classifier came back with: %d, the real answer is : %d' % (classifierResult, realDigit)
+        if (classifierResult != realDigit):
+            errorCount += 1.0
+    print "the total number of errors is: %d" % errorCount
+    print "the total error rate is: %f" % (errorCount / mTest)
+
+
+
 if __name__ == '__main__':
     test1()
     # datingClassTest()
-    classiferPerson()  # 测试值10000, 10, 0.5
+    # classiferPerson()  # 测试值10000, 10, 0.5
+    handWritingClassTest()
