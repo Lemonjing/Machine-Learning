@@ -11,7 +11,7 @@ decisionNode = dict(boxstyle="sawtooth", fc="0.8")
 leafNode = dict(boxstyle="round4", fc="0.8")
 arrowArgs = dict(arrowstyle="<-")
 
-# nodeTxt为要显示的文本，centerPt为文本的中心点，xy=parentPoint是箭头尖的坐标
+# nodeTxt为要显示的文本，childPoint为指向的文本中心点，xy=parentPoint是箭头起始点坐标
 # xycoords和textcoords是坐标xy与xytext的说明（按轴坐标），若未设置，默认为data
 # va/ha设置节点框中文字的位置，va为纵向取值为(u'top', u'bottom', u'center', u'baseline')，ha为横向取值为(u'center', u'right', u'left')
 
@@ -28,8 +28,8 @@ arrowArgs = dict(arrowstyle="<-")
 """
 matplotlib注解
 """
-def plotNode(nodeText, parentPoint, centerPoint, nodeType):
-    createPlot.ax1.annotate(nodeText, xy=parentPoint, xycoords="axes fraction", xytext=centerPoint
+def plotNode(nodeText, parentPoint, childPoint, nodeType):
+    createPlot.ax1.annotate(nodeText, xy=parentPoint, xycoords="axes fraction", xytext=childPoint
                             , textcoords="axes fraction", va="center", ha="center", bbox=nodeType, arrowprops=arrowArgs)
 
 """
@@ -85,7 +85,13 @@ def retrieveTree():
     ]
     return myTrees
 
-
+"""
+父子节点间添加文本
+"""
+def plotMidText(parentPoint, childPoint, midText):
+    xMid = (parentPoint[0] - childPoint[0]) / 2.0 + childPoint[0]
+    yMid = (parentPoint[1] - childPoint[1]) / 2.0 + childPoint[1]
+    createPlot.ax1.text(xMid, yMid, midText)
 
 def test():
     # createPlot()
