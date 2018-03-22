@@ -32,17 +32,57 @@ def plotNode(nodeText, parentPoint, childPoint, nodeType):
     createPlot.ax1.annotate(nodeText, xy=parentPoint, xycoords="axes fraction", xytext=childPoint
                             , textcoords="axes fraction", va="center", ha="center", bbox=nodeType, arrowprops=arrowArgs)
 
+# """
+# 测试画图
+# """
+# def createPlot():
+#     fig = plt.figure(1, facecolor='white')
+#     fig.clf()
+#     createPlot.ax1 = plt.subplot(111, frameon=True)  # frameon表示是否绘制坐标轴矩形
+#     plotNode(u"决策节点", (0.1, 0.5), (0.5, 0.1), decisionNode)
+#     plotNode(u"叶子节点", (0.3, 0.8), (0.8, 0.1), leafNode)
+#     plt.show()
+
 """
-主函数
+正式画图-主函数
 """
-def createPlot():
+def createPlot(inTree):
     fig = plt.figure(1, facecolor='white')
     fig.clf()
-    createPlot.ax1 = plt.subplot(111, frameon=True)  # frameon表示是否绘制坐标轴矩形
-    plotNode(u"决策节点", (0.1, 0.5), (0.5, 0.1), decisionNode)
-    plotNode(u"叶子节点", (0.3, 0.8), (0.8, 0.1), leafNode)
+    axprops = dict(xticks=[], yticks=[])  # 不显示坐标轴
+    createPlot.ax1 = plt.subplot(111, frameon=False, **axprops)  # frameon表示是否绘制坐标轴矩形
+
+    plotTree.totalW = float(getNumLeafs(inTree))
+    plotTree.totalD = float(getTreeDepth(inTree))
+    plotTree.xOff = -0.5/plotTree.totalW
+    plotTree.yOff = 1.0
+    plotTree(inTree, (0.5, 1.0), "")
+
     plt.show()
 
+
+"""
+递归构造注解树
+"""
+def plotTree(myTree, parentPoint, nodeText):
+    numLeafs = getNumLeafs(myTree)
+    depth = getTreeDepth(myTree)
+    featureName = myTree.keys()[0]
+    currentPoint = (plotTree.xOff + (1+float(numLeafs))/2.0/plotTree.totalW, plotTree.yOff)
+    plotMidText(parentPoint, currentPoint, nodeText)
+    plotNode(featureName, parentPoint, currentPoint, decisionNode)
+    nextDict = myTree[featureName]
+    plotTree.yOff = plotTree.yOff - 1.0 / plotTree.totalD
+    for key in nextDict:
+        # 递归画子树
+        if type(nextDict[key]).__name__ == "dict":
+            plotTree(nextDict[key], currentPoint, str(key))
+        # 画叶结点
+        else:
+            plotTree.xOff = plotTree.xOff + 1.0 / plotTree.totalW
+            plotNode(nextDict[key], currentPoint, (plotTree.xOff, plotTree.yOff), leafNode)
+            plotMidText(currentPoint, (plotTree.xOff, plotTree.yOff), str(key))
+    plotTree.yOff = plotTree.yOff + 1.0 / plotTree.totalD
 
 """
 叶结点数目
@@ -66,7 +106,7 @@ def getTreeDepth(myTree):
     maxDepth = 0
     rootFeature = myTree.keys()[0]
     rootFeatureDict = myTree[rootFeature]
-    for key in rootFeatureDict.keys():
+    for key in rootFeatureDict:
         if type(rootFeatureDict[key]).__name__ == 'dict':
             tmpDepth = 1 + getTreeDepth(rootFeatureDict[key])
         else:
@@ -76,16 +116,6 @@ def getTreeDepth(myTree):
     return maxDepth
 
 """
-准备测试数据
-"""
-def retrieveTree():
-    myTrees = [
-        {'no surfacing': {0: 'no', 1: {'flippers': {0: 'no', 1: 'yes'}}}},
-        {'no surfacing': {0: 'no', 1: {'flippers': {0: {'head': {0: 'no', 1: 'yes'}}, 1: 'no'}}}}
-    ]
-    return myTrees
-
-"""
 父子节点间添加文本
 """
 def plotMidText(parentPoint, childPoint, midText):
@@ -93,12 +123,18 @@ def plotMidText(parentPoint, childPoint, midText):
     yMid = (parentPoint[1] - childPoint[1]) / 2.0 + childPoint[1]
     createPlot.ax1.text(xMid, yMid, midText)
 
+"""
+准备测试数据
+"""
+def retrieveTree(i):
+    myTrees = [
+        {'no surfacing': {0: 'no', 1: {'flippers': {0: 'no', 1: 'yes'}}}},
+        {'no surfacing': {0: 'no', 1: {'flippers': {0: {'head': {0: 'no', 1: 'yes'}}, 1: 'no'}}}}
+    ]
+    return myTrees[i]
+
 def test():
-    # createPlot()
-    print "numLeafs-1", getNumLeafs(retrieveTree()[0])
-    print "numLeafs-2", getNumLeafs(retrieveTree()[1])
-    print "depth-1", getTreeDepth(retrieveTree()[0])
-    print "depth-2", getTreeDepth(retrieveTree()[1])
+    createPlot(retrieveTree(1))
 
 
 if __name__ == '__main__':
