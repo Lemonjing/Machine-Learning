@@ -4,6 +4,9 @@
 from math import log
 import operator
 
+"""
+计算香农熵
+"""
 def calcShannonEntropy(dataset):
     num = len(dataset)
     labelCounts = {}
@@ -27,12 +30,6 @@ def createDataSet():
                [0, 1, 'no']]
     labels = ["no surfacing", "flippers"]
     return dataSet, labels
-
-def test():
-    dataSet, labels = createDataSet()
-    print calcShannonEntropy(dataSet)
-    print chooseBestFeatureToSplit(dataSet)
-    print createTree(dataSet,labels)
 
 
 """
@@ -82,7 +79,7 @@ def majorityCount(classList):
     return sortedClassCount[0][0]
 
 """
-递归构造决策树
+递归构造决策树-核心
 """
 def createTree(dataSet, labels):
     classList = [line[-1] for line in dataSet]
@@ -101,6 +98,72 @@ def createTree(dataSet, labels):
         myTree[bestFeatureLabel][value] = createTree(splitDataSet(dataSet, bestFeature, value), subLabels)
     return myTree
 
+
+"""
+使用决策树进行分类
+"""
+def classify(inTree, labels, testVec):
+    featureName = inTree.keys()[0]
+    nextDict = inTree[featureName]
+    featureIndex = labels.index(featureName)
+    for key in nextDict:
+        if testVec[featureIndex] == key:
+            if type(nextDict[key]).__name__ == "dict":
+                classLabel = classify(nextDict[key], labels, testVec)
+            else:
+                classLabel = nextDict[key]
+    return classLabel
+
+"""
+持久化分类器
+"""
+def storeTree(inTree, fileName):
+    import pickle
+    fw = open(fileName, 'w')
+    pickle.dump(inTree, fw)
+    fw.close()
+
+def grabTree(fileName):
+    import pickle
+    fr = open(fileName)
+    return pickle.load(fr)
+
+
+"""
+准备测试数据
+"""
+def retrieveTree(i):
+    myTrees = [
+        {'no surfacing': {0: 'no', 1: {'flippers': {0: 'no', 1: 'yes'}}}},
+        {'no surfacing': {0: 'no', 1: {'flippers': {0: {'head': {0: 'no', 1: 'yes'}}, 1: 'no'}}}}
+    ]
+    return myTrees[i]
+
+def lensesTest():
+    fr = open("../../resources/decisionTree/lenses.txt")
+    lensesData = [line.strip().split("\t") for line in fr.readlines()]
+    lensesLabels = ["age", "prescript", "astigmatic", "tearRate"]
+    lensesTree = createTree(lensesData, lensesLabels)
+    print "lensesTree", lensesTree
+    import treePlotter
+    treePlotter.createPlot(lensesTree)
+
+def test():
+    dataSet, labels = createDataSet()
+    print calcShannonEntropy(dataSet)
+    print chooseBestFeatureToSplit(dataSet)
+    # 决策树构造测试
+    # print createTree(dataSet, labels)
+    labels = ["no surfacing", "flippers"]
+    # 分类测试
+    print classify(retrieveTree(0), labels, [1, 0])
+    # 持久化测试
+    oldTree = createTree(dataSet, labels)
+    print 'oldTree', oldTree
+    storeTree(oldTree, 'tree.txt')
+    newTree = grabTree('tree.txt')
+    print 'newTree', newTree
+    lensesTest()
 
 if __name__ == '__main__':
     test()
