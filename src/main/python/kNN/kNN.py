@@ -6,45 +6,6 @@ import operator
 import matplotlib.pyplot as plt
 from os import listdir
 
-"""
-电影分类的例子（收集数据）
-"""
-def createDataSet():
-    group = np.array([[1.0, 1.1], [1.0, 1.0], [0, 0], [0, 0.1]])
-    labels = ['A', 'A', 'B', 'B']
-    return group, labels
-
-
-"""
-电影分类的例子测试
-"""
-def test1():
-    group, labels = createDataSet()
-    print "group=", str(group)
-    print "labels=", str(labels)
-    print classify0([0, 0], group, labels, 3)
-
-
-"""
-改进约会网站配对的matplotlib画图测试
-"""
-def datingTest():
-    datingMatrix, datingLabels = file2Matrix("../../resources/kNN/dating.txt")
-    print "datingMatrix=", datingMatrix
-    print "datingLabels=", datingLabels
-
-    def matplotGraph():
-        fig = plt.figure()
-        ax = fig.add_subplot(111)
-        # ax.set_title(u"子图")
-        ax.scatter(datingMatrix[:, 1], datingMatrix[:, 2], 15.0 * np.array(datingLabels), 15.0 * np.array(datingLabels))
-        plt.title(u"约会网站配对效果")
-        plt.xlabel(u"玩视频游戏所耗时间百分比")
-        plt.ylabel(u"每周消费的冰淇淋公升数")
-        plt.show()
-
-    matplotGraph()
-
 
 """
 kNN分类核心算法
@@ -107,41 +68,6 @@ def autoNorm(dataset):
 
 
 """
-改进约会网站配对分类器错误率测试（测试）
-"""
-def datingClassTest():
-    testRatio = 0.10  # 预测样本所占比例
-    datingDataMatrix, datingDataLabels = file2Matrix("../../resources/kNN/dating.txt")
-    normMatrix, gap, minValue = autoNorm(datingDataMatrix)
-    m = normMatrix.shape[0] # 样本总大小
-    mTest = int(m * testRatio)  # 用于预测的占10%
-    errorCount = 0.0
-    for i in range(mTest):
-        classifierResult = classify0(normMatrix[i, :], normMatrix[mTest:m, :]
-                                     , datingDataLabels[mTest:m], 3)
-        print 'the classifier came back with: %d, the real answer is : %d' % (classifierResult, datingDataLabels[i])
-        if (classifierResult != datingDataLabels[i]):
-            errorCount += 1.0
-    print "the total error rate is: %f" % (errorCount / float(mTest))
-
-
-"""
-改进约会网站配对分类器使用（预测）
-"""
-def classiferPerson():
-    resultList = [u"一点也没", u"有些魅力", u"极具魅力"]
-    ffMiles = float(raw_input("frequent flier miles earned per year?"))
-    percentTime = float(raw_input("percentage of time spent playing games?"))
-    iceCream = float(raw_input("liters of ice cream consumed per year?"))
-    datingDataMatrix, datingDataLabels = file2Matrix("../../resources/kNN/dating.txt")
-    normMatrix, gap, minValue = autoNorm(datingDataMatrix)
-    inArr = np.array([ffMiles, percentTime, iceCream])
-    # 注意这里的预测输入inArr也要归一化
-    classifierResult = classify0((inArr - minValue) / gap, normMatrix, datingDataLabels, 3)
-    print "you probably like this person:", resultList[classifierResult - 1]
-
-
-"""
 手写数字识别文本图像转矩阵（准备数据）
 """
 def img2Vector(fileName):
@@ -185,7 +111,6 @@ def handWritingClassTest():
 
 
 if __name__ == '__main__':
-    test1()
     # datingClassTest()
     # classiferPerson()  # 测试值10000, 10, 0.5
     handWritingClassTest()

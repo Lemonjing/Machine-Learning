@@ -2,14 +2,14 @@
 
 **ML参考书和视频教程**
 
-- [ ] Andrew Ng斯坦福机器学习公开课
-- [ ] ApacheCN 机器学习课程
-- [ ] 李航统计学习方法
-- [ ] 机器学习实战
-- [ ] 西瓜书
-- [ ] 花书（深度学习）
-- [ ] MLAPP（Machine Learning A Probabilistic Perspective）
-- [ ] 推荐系统实战
+- Andrew Ng斯坦福机器学习公开课
+- 李航统计学习方法
+- 机器学习实战
+- 周志华西瓜书
+- 花书（深度学习）
+- MLAPP（Machine Learning A Probabilistic Perspective）
+- 项亮推荐系统实战
+- ApacheCN 机器学习课程
 
 ## ML专业术语
 
