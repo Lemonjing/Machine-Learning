@@ -5,7 +5,7 @@ import numpy as np
 import operator
 import matplotlib.pyplot as plt
 
-RESOURCES_ROOT = "/Users/insomnia/GitHub/MachineLearning/src/main/resources"
+RESOURCES_ROOT = "/Users/chucheng/GitHub/MachineLearning/src/main/resources"
 
 """
 改进约会网站配对的matplotlib画图测试
@@ -17,9 +17,9 @@ def showData():
         fig = plt.figure()
         ax = fig.add_subplot(111)
         ax.scatter(datingMatrix[:, 1], datingMatrix[:, 2], s=15.0 * np.array(datingLabels), c=15.0 * np.array(datingLabels))
-        plt.title("约会网站配对效果")
-        plt.xlabel("玩视频游戏所耗时间百分比")
-        plt.ylabel("每周消费的冰淇淋公升数")
+        plt.title(u"约会网站配对效果")
+        plt.xlabel(u"玩视频游戏所耗时间百分比")
+        plt.ylabel(u"每周消费的冰淇淋公升数")
         plt.show()
 
     matplotGraph()

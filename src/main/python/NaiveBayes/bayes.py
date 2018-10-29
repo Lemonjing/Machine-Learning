@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -39,7 +39,7 @@ def setOfWords2Vec(vocabList, inputSet):
         if word in vocabList:
             res[vocabList.index(word)] = 1
         else:
-            print "the word: %s is not in my vocabulary!" % word
+            print("the word: %s is not in my vocabulary!" % word)
     return res
 
 """
@@ -52,7 +52,7 @@ def bagOfWords2Vec(vocabList, inputSet):
         if word in vocabList:
             res[vocabList.index(word)] += 1
         else:
-            print "the word: %s is not in my vocabulary!" % word
+            print("the word: %s is not in my vocabulary!" % word)
     return res
 
 """
@@ -62,7 +62,7 @@ def bagOfWords2Vec(vocabList, inputSet):
 def _trainNB0(trainMatrix, trainClass):
     numTrainDocs = len(trainMatrix)
     numWords = len(trainMatrix[0])
-    print "numWords", numWords
+    print("numWords", numWords)
     pAbusive = sum(trainClass) / float(numTrainDocs)  # P(class=1)侮辱性文档概率
     p0Num = np.zeros(numWords); p1Num = np.zeros(numWords)
     p0Denom = 0.0; p1Denom = 0.0
@@ -74,8 +74,8 @@ def _trainNB0(trainMatrix, trainClass):
             p0Num += trainMatrix[i]
             p0Denom += sum(trainMatrix[i])
 
-    print "p0Denom", p0Denom
-    print "p1Denom", p1Denom
+    print("p0Denom", p0Denom)
+    print("p1Denom", p1Denom)
     p0Vec = p0Num / p0Denom
     p1Vec = p1Num / p1Denom
     return p0Vec, p1Vec, pAbusive
@@ -124,10 +124,10 @@ def testNB():
     p0V, p1V, pAb = trainNB0(trainMatrix, classes)
     testDoc = ['love', 'my', 'dalmation']
     testDocVec = setOfWords2Vec(vocabulary, testDoc)
-    print testDoc, "classified as: ", classifyNB(testDocVec, p0V, p1V, pAb)
+    print(testDoc, "classified as: ", classifyNB(testDocVec, p0V, p1V, pAb))
     testDoc2 = ['stupid', 'garbage']
     testDoc2Vec = setOfWords2Vec(vocabulary, testDoc2)
-    print testDoc2, "classified as: ", classifyNB(testDoc2Vec, p0V, p1V, pAb)
+    print(testDoc2, "classified as: ", classifyNB(testDoc2Vec, p0V, p1V, pAb))
 
 """
 使用朴素贝叶斯进行交叉验证
@@ -143,7 +143,7 @@ def textParse(longText):
 def spamTest():
     import random
     docs = []; classes = []; fullText = []
-    for i in range(1,26):
+    for i in range(1, 26):
         words = textParse(open("../../resources/NaiveBayes/email/spam/%d.txt" % i).read())
         docs.append(words)
         fullText.extend(words)
@@ -153,7 +153,7 @@ def spamTest():
         fullText.extend(words)
         classes.append(0)
     vocabulary = createVocabList(docs)
-    trainSet = range(50); testSet = []
+    trainSet = list(range(50)); testSet = []
     for i in range(10):
         randIndex = int(random.uniform(0, len(trainSet)))
         testSet.append(trainSet[randIndex])
@@ -168,8 +168,8 @@ def spamTest():
         wordVector = setOfWords2Vec(vocabulary, docs[docIndex])
         if classifyNB(wordVector, p0V, p1V, pSpam) != classes[docIndex]:
             errorCount += 1
-            print "classification error", docs[docIndex]
-    print "the error rate is ", float(errorCount) / len(testSet)
+            print("classification error", docs[docIndex])
+    print("the error rate is ", float(errorCount) / len(testSet))
 
 """
 朴素贝叶斯从个人广告中获取区域倾向
@@ -223,7 +223,7 @@ def localWords(feed0, feed1):
     for tuple in top30Words:
         if tuple[0] in vocabulary: vocabulary.remove(tuple[0])
 
-    trainSet = range(2 * minLen); testSet = []
+    trainSet = list(range(2 * minLen)); testSet = []
 
     # 选2篇为测试集合
     for i in range(2):
@@ -240,7 +240,7 @@ def localWords(feed0, feed1):
         wordVec = bagOfWords2Vec(vocabulary, docs[docIndex])
         if classifyNB(wordVec, p0V, p1V, pSpam) != classes[docIndex]:
             errorCount += 1
-    print "the error rate is ", float(errorCount) / len(testSet)
+    print("the error rate is ", float(errorCount) / len(testSet))
     return vocabulary, p0V, p1V
 
 """
@@ -254,32 +254,32 @@ def getTopWords(nasa, yahoo):
         if p1V[i] > -6.0: topYahoo.append((vocabulary[i], p1V[i]))
     sortedNasa = sorted(topNasa, key=lambda pair: pair[1], reverse=True)
     sortedYahoo = sorted(topYahoo, key=lambda pair: pair[1], reverse=True)
-    print "======sortedNasa======"
+    print("======sortedNasa======")
     for item in sortedNasa:
-        print item[0]
-    print "======sortedYahoo======"
+        print(item[0])
+    print("======sortedYahoo======")
     for item in sortedYahoo:
-        print item[0]
+        print(item[0])
 
 def test():
     docs, classes = loadDataSet()
     vocabulary = createVocabList(docs)
-    print "====test Vocabulary===="
-    print "vocabulary", vocabulary
-    print setOfWords2Vec(vocabulary, docs[0])
-    print "====test _trainNB0===="
+    print("====test Vocabulary====")
+    print("vocabulary", vocabulary)
+    print(setOfWords2Vec(vocabulary, docs[0]))
+    print("====test _trainNB0====")
     trainMatrix = []
     for doc in docs:
         trainMatrix.append(setOfWords2Vec(vocabulary, doc))
     p0V, p1V, pAb = _trainNB0(trainMatrix, classes)
-    print "p0V", p0V
-    print "p1V", p1V
-    print "pAb", pAb
-    print "======test NB(trainNB0)======"
+    print("p0V", p0V)
+    print("p1V", p1V)
+    print("pAb", pAb)
+    print("======test NB(trainNB0)======")
     testNB()
-    print "======test Spam======"
+    print("======test Spam======")
     spamTest()
-    print "======test localWords======"
+    print("======test localWords======")
     import feedparser
     # 这两个源不可用
     # ny = feedparser.parse("http://newyork.craigslist.org/stp/index.rss")
@@ -289,6 +289,7 @@ def test():
     yahoo = feedparser.parse("http://sports.yahoo.com/nba/teams/hou/rss.xml")
     # localWords(nasa, yahoo)
     getTopWords(nasa, yahoo)
+
 
 if __name__ == '__main__':
     test()

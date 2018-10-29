@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -12,8 +12,8 @@ def loadDataSet(fileName):
         labelList.append(float(lineArr[2]))
     dataArr = np.array(dataList)
     labelArr = np.array(labelList)
-    print "dataArr", dataArr
-    print "labelArr", labelArr
+    print("dataArr", dataArr)
+    print("labelArr", labelArr)
     return dataArr, labelArr
 
 """

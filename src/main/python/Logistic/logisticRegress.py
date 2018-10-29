@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -65,7 +65,7 @@ def advancedRandomGradientAscent(inputArr, classArr, numIter=150):
     m, n = np.shape(inputArr)
     weights = np.ones(n)
     for i in range(numIter):
-        dataIndex = range(m)
+        dataIndex = list(range(m))
         for j in range(m):
             alpha = 4 / (1.0+i+j) + 0.01
             randIndex = int(random.uniform(0, len(dataIndex)))
@@ -131,14 +131,16 @@ def colicTest():
         if (classify(np.array(lineArr), trainingWeights)) != int(currLine[21]):
             errorCount += 1
     errorRate = float(errorCount) / numTest
-    print "the error rate of this test is: %f." % errorRate
+    print("the error rate of this test is: %f." % errorRate)
     return errorRate
+
 
 def multiTest():
     times = 10; errorSum = 0.0
     for i in range(times):
         errorSum += colicTest()
-    print "after %d iterations the avg error rate is %f." % (times, errorSum/times)
+    print("after %d iterations the avg error rate is %f." % (times, errorSum/times))
+
 
 def test():
     dataArr, labelArr = loadDataSet()
@@ -147,6 +149,7 @@ def test():
     # weights = advancedRandomGradientAscent(dataArr, labelArr)
     # plotBestFit(weights)
     multiTest()
+
 
 if __name__ == '__main__':
     test()

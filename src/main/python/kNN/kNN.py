@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import numpy as np
@@ -102,12 +102,11 @@ def handWritingClassTest():
         realDigit = int(fileName.split("_")[0])
         testVector = img2Vector("../../resources/kNN/testDigits/%s" % fileName)
         classifierResult = classify0(testVector, trainingMatrix, labels, 3)
-        print 'the classifier came back with: %d, the real answer is : %d' % (classifierResult, realDigit)
+        print('the classifier came back with: %d, the real answer is : %d' % (classifierResult, realDigit))
         if (classifierResult != realDigit):
             errorCount += 1.0
-    print "the total number of errors is: %d" % errorCount
-    print "the total error rate is: %f" % (errorCount / mTest)
-
+    print("the total number of errors is: %d" % errorCount)
+    print("the total error rate is: %f" % (errorCount / mTest))
 
 
 if __name__ == '__main__':

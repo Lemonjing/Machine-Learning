@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 import matplotlib.pyplot as plt
@@ -67,7 +67,7 @@ def createPlot(inTree):
 def plotTree(myTree, parentPoint, nodeText):
     numLeafs = getNumLeafs(myTree)
     depth = getTreeDepth(myTree)
-    featureName = myTree.keys()[0]
+    featureName = list(myTree.keys())[0]
     currentPoint = (plotTree.xOff + (1+float(numLeafs))/2.0/plotTree.totalW, plotTree.yOff)
     plotMidText(parentPoint, currentPoint, nodeText)
     plotNode(featureName, parentPoint, currentPoint, decisionNode)
@@ -89,7 +89,7 @@ def plotTree(myTree, parentPoint, nodeText):
 """
 def getNumLeafs(myTree):
     numLeafs = 0
-    rootFeature = myTree.keys()[0]
+    rootFeature = list(myTree.keys())[0]
     rootFeatureDict = myTree[rootFeature]
     for key in rootFeatureDict.keys():
         if type(rootFeatureDict[key]).__name__ == 'dict':
@@ -104,7 +104,7 @@ def getNumLeafs(myTree):
 """
 def getTreeDepth(myTree):
     maxDepth = 0
-    rootFeature = myTree.keys()[0]
+    rootFeature = list(myTree.keys())[0]
     rootFeatureDict = myTree[rootFeature]
     for key in rootFeatureDict:
         if type(rootFeatureDict[key]).__name__ == 'dict':

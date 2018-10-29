@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 from math import log
@@ -103,7 +103,7 @@ def createTree(dataSet, labels):
 使用决策树进行分类
 """
 def classify(inTree, labels, testVec):
-    featureName = inTree.keys()[0]
+    featureName = list(inTree.keys())[0]
     nextDict = inTree[featureName]
     featureIndex = labels.index(featureName)
     for key in nextDict:
@@ -114,18 +114,20 @@ def classify(inTree, labels, testVec):
                 classLabel = nextDict[key]
     return classLabel
 
+
 """
 持久化分类器
 """
 def storeTree(inTree, fileName):
     import pickle
-    fw = open(fileName, 'w')
+    fw = open(fileName, 'wb')
     pickle.dump(inTree, fw)
     fw.close()
 
+
 def grabTree(fileName):
     import pickle
-    fr = open(fileName)
+    fr = open(fileName, 'rb')
     return pickle.load(fr)
 
 
@@ -144,26 +146,27 @@ def lensesTest():
     lensesData = [line.strip().split("\t") for line in fr.readlines()]
     lensesLabels = ["age", "prescript", "astigmatic", "tearRate"]
     lensesTree = createTree(lensesData, lensesLabels)
-    print "lensesTree", lensesTree
-    import treePlotter
-    treePlotter.createPlot(lensesTree)
+    print("lensesTree", lensesTree)
+    import DecisionTree.treePlotter as tp
+    tp.createPlot(lensesTree)
 
 def test():
     dataSet, labels = createDataSet()
-    print calcShannonEntropy(dataSet)
-    print chooseBestFeatureToSplit(dataSet)
+    print(calcShannonEntropy(dataSet))
+    print(chooseBestFeatureToSplit(dataSet))
     # 决策树构造测试
     # print createTree(dataSet, labels)
     labels = ["no surfacing", "flippers"]
     # 分类测试
-    print classify(retrieveTree(0), labels, [1, 0])
+    print(classify(retrieveTree(0), labels, [1, 0]))
     # 持久化测试
     oldTree = createTree(dataSet, labels)
-    print 'oldTree', oldTree
+    print('oldTree', oldTree)
     storeTree(oldTree, 'tree.txt')
     newTree = grabTree('tree.txt')
-    print 'newTree', newTree
+    print('newTree', newTree)
     lensesTest()
+
 
 if __name__ == '__main__':
     test()
